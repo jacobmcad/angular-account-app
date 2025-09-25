@@ -1,0 +1,24 @@
+# Node dependencies
+node_modules/
+
+# Angular build outputs
+dist/
+.angular/cache/
+
+# Storybook artifacts
+storybook-static/
+debug-storybook.log
+storybook.log
+doctor-storybook.log
+
+# Playwright & Pa11y artifacts
+playwright-report/
+playwright-report.zip
+test-results/
+pa11y-snapshots/
+
+# Misc workspace clutter
+.DS_Store
+*.log
+*.tmp
+

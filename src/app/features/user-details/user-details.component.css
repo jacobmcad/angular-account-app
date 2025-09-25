@@ -1,0 +1,22 @@
+/* Bordered, two-column key/value table that matches the legacy page */
+.kv-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 0.95rem;
+}
+.kv-table th,
+.kv-table td {
+  border: 1px solid #dcdcdc;
+  padding: 0.75rem 0.9rem;
+  vertical-align: top;
+}
+.kv-table th {
+  width: 260px;               /* gives left column the same feel */
+  font-weight: 700;           /* bold labels like the legacy UI */
+  color: #333;
+}
+.kv-table tr:nth-child(odd) td,
+.kv-table tr:nth-child(odd) th {
+  background-color: #fafafa;  /* subtle striping like the original */
+}

@@ -1,0 +1,126 @@
+UOM Project — Identity Tool Replacement (My Account UI)
+
+1) Context & Objective
+- UMN is replacing Oracle Identity Manager (OIM) with SailPoint IIQ, but they don’t want IIQ’s UI. We’re building a custom, accessible front-end for the existing my-account experience.
+- The current site is JSP (oimUi) running on Tomcat; our job is to modernize UI and meet 508/WCAG 2.2 AA while data/APIs already exist (auth happens before our app; cookies/headers flow; no CORS).
+- Deliver via a strangler pattern: run Angular pages side-by-side with JSP and migrate page-by-page, with instant fallback.
+
+2) Constraints & Requirements
+- Accessibility: 508 / WCAG 2.2 AA (landmarks, headings, visible focus, keyboard-only flows, reduced motion, zoom 200–400%, ARIA live regions).
+- Responsiveness: phones → desktop (container queries ok).
+- Auth/session: behind SSO/Shibboleth; APIs send the cookies/headers we need; no CORS issues.
+- Browser floor: modern (Chrome/Edge last 2, Firefox ESR, Safari).
+- Branding: tokenized theme that matches UMN palette (maroon/gold), not rigid global CSS.
+- Backend: legacy/“messy” REST; no Swagger; we abstract with a front-end Data Access Layer (DAL) now; optional middleware later.
+
+3) Decisions We’ve Made
+- Framework: Angular 17+ (standalone components, Signals).
+- Styling: Tailwind CSS + design tokens (contrast-safe UMN theme).
+- Accessibility tooling: ESLint angular template rules; Storybook a11y addon; Playwright + axe; (Pa11y optional CI).
+- Data Access Layer (DAL): API_CLIENT injection token + RestApiClientService using HttpClient. Mock with MSW in dev. Easy to swap to middleware later.
+- Strangler Integration: Serve Angular under /self-service/* in the same Tomcat, link from JSP nav with a feature flag, keep JSP pages live for rollback.
+
+4) Current Status (short)
+- JSP local: ✅ Tomcat 10.1.x on Windows, WAR deployed, app runs locally.
+- Angular foundation: ✅ Project created, Tailwind + tokens, a11y linting/testing wiring in place.
+- Feature built: ✅ Change/Reset Password page (read-only workflow for now) with full form validation + a11y semantics; DAL method and MSW mock endpoint work in dev.
+
+5) Local Environment (Windows)
+- Tomcat: C:\Tomcat\apache-tomcat-10.1.46\
+- App deploy (outside Program Files):
+  C:\apps\web\oimUi\
+    ├─ oimUi.war                  # team-provided
+    ├─ logs\
+    └─ resources\
+         oimUi.xml                # app config (instance, duo skip, idw_configs)
+         oimUiMenus.xml           # nav + routing context
+         oimUi_log4j2.xml         # log config; LOG_DIR resolves to C:/apps/web/oimUi/logs
+         stub_internet_id.txt     # your Internet ID (one line)
+         {your}_keystore_dev.jks  # keystore (for IDW calls)
+
+- Tomcat context file:  
+  C:\Tomcat\apache-tomcat-10.1.46\conf\Catalina\localhost\oimUi.xml
+  <Context docBase="C:/apps/web/oimUi/oimUi.war" unpackWAR="true">
+    <Environment name="configurationPath"
+                 value="C:/apps/web/oimUi/resources"
+                 type="java.lang.String"/>
+  </Context>
+
+- Tomcat setenv.bat:
+  C:\Tomcat\apache-tomcat-10.1.46\bin\setenv.bat
+  @echo off
+  set CATALINA_OPTS=%CATALINA_OPTS% -DLOG_DIR="C:/apps/web/oimUi/logs"
+
+6) Angular Project Structure (key parts)
+my-account-ui/
+  src/
+    app/
+      app.config.ts          # provideHttpClient, router, apiClientProvider
+      app.routes.ts          # standalone, lazy routes
+      layout/app-shell.*     # header/nav/skip link/main/footer
+      lib/api/
+        models.ts            # UserDetails, ResetPasswordRequest/Response, etc.
+        client.token.ts      # API_CLIENT InjectionToken + ApiClient interface
+        rest-client.service.ts# HttpClient-based impl
+        providers.ts         # maps API_CLIENT -> RestApiClientService
+        mocks/
+          handlers.ts        # MSW handlers, e.g. /api/password/reset
+          browser.ts         # MSW worker setup
+    features/
+      user-details/          # read-only user details page (inline provisioned accounts)
+      password-management/reset-password/
+         reset-password.component.ts
+         reset-password.component.html
+
+7) Accessibility Baseline We’re Enforcing
+- Landmarks (header/nav/main/footer) + skip link into #main.
+- Headings logical order (no jumps).
+- Focus visible & never trapped; manage focus on route change if dialogs later.
+- Live regions for async results, error summaries, and success banners.
+- Forms labeled; errors linked via aria-describedby; aria-invalid where appropriate.
+- Keyboard: all actions reachable; no pointer-only affordances.
+- Color/contrast: tokens tuned to AA; avoid text on UMN Gold unless contrast tested.
+- Zoom/resp.: 200–400% zoom and small viewports are usable; tables scroll or stack.
+
+8) Integration Plan (Strangler Pattern)
+Goal: run Angular alongside JSP now, switch links page-by-page.
+
+A. Build Angular for a sub-path
+ng build --configuration production --base-href /self-service/ --deploy-url /self-service/
+
+B. Serve Angular from Tomcat
+Option 1 (quick): Copy dist into webapps/self-service
+Option 2 (clean): Create a Tomcat context self-service.xml
+
+C. Routing
+- Angular runs at http://localhost:8080/self-service/…
+- Ensure index.html has <base href="/self-service/">.
+
+D. Link from JSP
+- In oimUiMenus.xml, add a link item to /self-service/password/reset behind a feature flag.
+
+E. Auth
+- Same origin & domain → Angular requests carry SSO cookies automatically.
+
+F. Fallback
+- If an Angular page misbehaves, change the nav link back to JSP.
+
+9) Near-Term Backlog (2–3 sprints)
+1) Finish Angular “Change Password” end-to-end
+2) User Details (read-only)
+3) Strangler rollout
+4) 508 verification
+5) (Optional) Middleware RFC
+
+10) Risks & Mitigations
+- Backend inconsistencies → Abstract via Angular DAL now; optionally move to middleware later.
+- Tight timeline → Strangler lets us ship page-by-page; JSP 508 patch remains a safety net.
+- A11y regressions → CI checks (axe/Pa11y), Storybook a11y addon, manual screen-reader QA.
+- Tomcat/Windows quirks → Use Tomcat 10.1 (not 11).
+
+11) What Codex Should Do Next (concrete prompts)
+- Add self-service context: Create self-service.xml context mapping to Angular dist.
+- Build script: Add an npm script build:self-service with base-href/deploy-url flags.
+- DAL stubs: Expand models.ts and rest-client.service.ts with read-only endpoints.
+- JSP nav: Open oimUiMenus.xml and add an item pointing to /self-service/password/reset.
+- A11y test: Create e2e/password-reset-a11y.spec.ts with Playwright + axe assertions.

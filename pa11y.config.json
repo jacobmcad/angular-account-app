@@ -1,0 +1,18 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "timeout": 30000,
+    "wait": 1000,
+    "screenCapture": "pa11y-snapshots/${slug}.png",
+    "headers": {
+      "Accept-Language": "en-US"
+    }
+  },
+  "urls": [
+    "http://localhost:4200/",
+    "http://localhost:4200/password/reset",
+    "http://localhost:4200/password/questions",
+    "http://localhost:4200/password/shared-secret",
+    "http://localhost:4200/password/prevent-phone"
+  ]
+}

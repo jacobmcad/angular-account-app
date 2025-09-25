@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* base text & link */
+:root{ color-scheme: light;}
+body {
+  margin: 0;
+  background-color: #eef1f5;
+  color: #2f3941;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+a{ @apply text-umn-maroon underline-offset-2; }
+a:hover{ @apply text-umn-gold; }
+
+/* consistent focus ring (WCAG) */
+:where(a,button,input,select,textarea,[role="button"]):focus-visible{
+  outline: none;
+  /* Replace theme(colors.umn.maroon) with the actual color value */
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #7a0019;
+}
+
+/* form controls */
+.form-input{ @apply w-full border border-umn-gray3 rounded px-3 py-2 bg-white; }
+.form-select{ @apply form-input pr-10; }
+.form-label{ @apply block font-medium mb-1; }
+.btn{
+  @apply inline-flex items-center justify-center px-5 py-2 rounded
+         bg-[#4e5a66] text-white hover:bg-[#3f4953];
+}
+.btn-primary{
+  @apply bg-umn-maroon text-white hover:bg-umn-gold hover:text-umn-text;
+}
+
+/* table like UMN */
+.umn-table{ @apply w-full border border-umn-gray3 bg-white; }
+.umn-table th, .umn-table td{ @apply border-t border-umn-gray3 px-4 py-2; }
+.umn-table th{ @apply bg-umn-gray1 text-left font-semibold; }

@@ -1,0 +1,15 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "timeout": 30000,
+    "wait": 1000,
+    "screenCapture": "pa11y-snapshots/${slug}.png"
+  },
+  "urls": [
+    "http://127.0.0.1:4500/",
+    "http://127.0.0.1:4500/password/reset",
+    "http://127.0.0.1:4500/password/questions",
+    "http://127.0.0.1:4500/password/shared-secret",
+    "http://127.0.0.1:4500/password/prevent-phone"
+  ]
+}

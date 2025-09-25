@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["../src/test.ts", "../src/**/*.spec.ts"],
+  "include": [
+    "../.storybook/*.ts",
+    "../src/**/*.stories.ts",
+    "../src/**/*.stories.tsx",
+    "../src/**/*.stories.mdx"
+  ]
+}

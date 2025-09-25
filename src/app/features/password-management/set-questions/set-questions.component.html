@@ -1,0 +1,108 @@
+<section class="p-6 space-y-6">
+  <h1 class="text-2xl font-bold">Set UMN Password Reset Questions</h1>
+  <p class="text-gray-700">
+    Choose three different security questions and provide answers you can remember.
+  </p>
+
+  <div *ngIf="successMessage() as message"
+       #successBannerRef
+       class="border border-green-600 bg-green-50 p-4 rounded"
+       role="status"
+       aria-live="polite"
+       tabindex="-1">
+    {{ message }}
+  </div>
+
+  <div *ngIf="shouldShowErrorSummary()"
+       #errorSummaryRef
+       class="border border-red-500 bg-red-50 p-4 rounded"
+       id="questions-error-summary"
+       role="alert"
+       aria-live="assertive"
+       tabindex="-1">
+    <h2 class="font-semibold text-red-700">Please fix the highlighted items</h2>
+    <ul class="list-disc pl-6 text-red-700">
+      <li *ngFor="let item of validationMessages()">
+        <a
+          class="underline"
+          [href]="'#' + item.fieldId"
+          (click)="focusField(item.fieldId); $event.preventDefault()"
+        >
+          {{ item.message }}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <fieldset class="space-y-6">
+      <legend class="sr-only">Password reset questions</legend>
+
+      <ng-container *ngFor="let index of questionIndexes; let i = index">
+        <div class="space-y-4 border border-gray-200 rounded p-4">
+          <h2 class="text-base font-semibold">Question {{ i + 1 }}</h2>
+
+          <div class="space-y-2">
+            <label [for]="questionId(i)" class="block font-medium">Select a question</label>
+            <select
+              [id]="questionId(i)"
+              [formControlName]="questionControl(i)"
+              class="w-full border rounded p-2"
+              [attr.aria-invalid]="hasQuestionError(i) ? 'true' : null"
+              [attr.aria-describedby]="describeQuestion(i)"
+            >
+              <option value="">-- Select --</option>
+              <option
+                *ngFor="let question of questions"
+                [ngValue]="question"
+                [disabled]="isOptionDisabled(question, i)"
+              >
+                {{ question }}
+              </option>
+            </select>
+            <p [id]="questionId(i) + '-help'" class="text-sm text-gray-600">
+              Each question must be unique.
+            </p>
+            <p *ngIf="getQuestionError(i) as message"
+               [id]="questionId(i) + '-error'"
+               class="text-sm text-red-700"
+               aria-live="polite">
+              {{ message }}
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <label [for]="answerId(i)" class="block font-medium">Answer</label>
+            <input
+              type="text"
+              [id]="answerId(i)"
+              [formControlName]="answerControl(i)"
+              class="w-full border rounded p-2"
+              autocomplete="off"
+              [attr.aria-invalid]="hasAnswerError(i) ? 'true' : null"
+              [attr.aria-describedby]="describeAnswer(i)"
+            />
+            <p [id]="answerId(i) + '-help'" class="text-sm text-gray-600">
+              Must be at least 4 characters and memorable to you.
+            </p>
+            <p *ngIf="getAnswerError(i) as message"
+               [id]="answerId(i) + '-error'"
+               class="text-sm text-red-700"
+               aria-live="polite">
+              {{ message }}
+            </p>
+          </div>
+        </div>
+      </ng-container>
+    </fieldset>
+
+    <div class="flex justify-end mt-6">
+      <button
+        type="submit"
+        class="btn btn-primary font-semibold"
+      >
+        Save questions
+      </button>
+    </div>
+  </form>
+</section>

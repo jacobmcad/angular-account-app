@@ -1,0 +1,22 @@
+import { TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+
+import { SideNavComponent } from './side-nav.component';
+
+describe('SideNavComponent', () => {
+  let component: SideNavComponent;
+  let fixture: ComponentFixture<SideNavComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SideNavComponent]
+    });
+    fixture = TestBed.createComponent(SideNavComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

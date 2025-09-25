@@ -1,0 +1,151 @@
+<section class="p-6 space-y-4" [attr.aria-busy]="loading() ? 'true' : null">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold" id="user-details-heading">
+      {{ user()?.fullName ?? 'User details' }}
+    </h1>
+    <button
+      type="button"
+      class="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-umn-maroon disabled:opacity-60"
+      [disabled]="loading()"
+      (click)="load()"
+    >
+      <span *ngIf="loading()" class="sr-only">Refreshing</span>
+      Refresh User
+    </button>
+  </div>
+
+  <div *ngIf="loading()" class="border border-gray-300 bg-white rounded p-4" role="status" aria-live="polite">
+    Loading user details…
+  </div>
+
+  <div *ngIf="error() as message"
+       class="border border-red-500 bg-red-50 rounded p-4"
+       role="alert"
+       aria-live="assertive">
+    <p class="text-red-700">{{ message }}</p>
+    <button
+      type="button"
+      class="mt-3 px-3 py-2 bg-umn-maroon text-white text-sm font-medium rounded hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-umn-maroon disabled:opacity-60"
+      [disabled]="loading()"
+      (click)="load()"
+    >
+      Try again
+    </button>
+  </div>
+
+  <ng-container *ngIf="user() as details">
+    <p class="text-gray-700">
+      Review the identity information on file for your University of Minnesota account.
+    </p>
+
+    <h2 class="text-lg font-semibold">
+      <span class="mr-2" aria-hidden="true">👤</span>{{ (details.email ?? '').split('@')[0] | uppercase }}
+    </h2>
+
+    <div class="overflow-x-auto">
+      <table class="w-full border border-gray-300 text-sm" aria-labelledby="user-details-heading">
+        <caption class="sr-only">Summary of current user account details and statuses.</caption>
+        <tbody>
+          <tr>
+            <th scope="row" class="w-1/3 border border-gray-300 bg-gray-50 text-left px-3 py-2 font-medium">
+              Full Name
+            </th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.fullName ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">PRI Name</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.priName ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Aliases</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.aliases?.join(', ') ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Person Types</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.personTypes?.join(', ') ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Employee ID</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.employeeId ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">ORCID iD</th>
+            <td class="border border-gray-300 px-3 py-2">
+              <a
+                *ngIf="details.orcid"
+                [href]="details.orcid"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 underline"
+              >
+                {{ details.orcid }}
+              </a>
+              <span *ngIf="!details.orcid">Not on file</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Alternate Email</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.altEmail ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Password Create Date</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.passwordCreateDate | date: 'medium' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Password Expire Date</th>
+            <td class="border border-gray-300 px-3 py-2">
+              {{ details.passwordExpireDate ? (details.passwordExpireDate | date: 'medium') : 'Password will not expire' }}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Duo Security Status</th>
+            <td class="border border-gray-300 px-3 py-2">
+              <span
+                [ngClass]="{
+                  'bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded': details.duoStatus?.required,
+                  'bg-gray-100 border border-gray-300 px-2 py-0.5 rounded': !details.duoStatus?.required
+                }"
+              >
+                {{ details.duoStatus?.required ? 'Required - Active' : 'Not Required' }}
+              </span>
+              <span *ngIf="details.duoStatus?.willActivate">
+                — activates {{ details.duoStatus?.willActivate | date: 'medium' }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Provisioned Accounts</th>
+            <td class="border border-gray-300 px-3 py-2">
+              <ul *ngIf="details.provisionedAccounts?.length; else noAccounts">
+                <li *ngFor="let acct of details.provisionedAccounts">
+                  {{ acct.system }} — <span class="font-medium">{{ acct.status }}</span>
+                </li>
+              </ul>
+              <ng-template #noAccounts>
+                <span>None provisioned.</span>
+              </ng-template>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">VPN Access</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.vpnAccess ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Wireless Access</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.wirelessAccess ?? '' }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Account Suppression</th>
+            <td class="border border-gray-300 px-3 py-2">{{ details.accountSuppression ?? '' }}</td>
+          </tr>
+      <tr>
+            <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Staff Details</th>
+            <td class="border border-gray-300 px-3 py-2">
+              {{ details.staffDetails?.poiTitle ?? 'Not available' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+</section>

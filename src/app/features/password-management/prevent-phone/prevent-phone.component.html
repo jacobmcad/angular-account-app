@@ -1,0 +1,36 @@
+<section class="page-card" aria-labelledby="prevent-heading">
+  <h1 id="prevent-heading" class="page-card__title">Prevent UMN Password Resets By Phone</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="page-card__form" novalidate>
+    <fieldset class="radio-group">
+      <legend class="radio-group__legend">Preference</legend>
+      <label class="radio-option">
+        <input type="radio" formControlName="preference" value="prevent" />
+        <span>Prevent</span>
+      </label>
+      <label class="radio-option">
+        <input type="radio" formControlName="preference" value="allow" />
+        <span>Allow</span>
+      </label>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</section>
+
+<ng-template #rail>
+  <aside class="rail-card" aria-labelledby="prevent-info-heading">
+    <h2 id="prevent-info-heading" class="rail-card__title">What will this do?</h2>
+    <p>
+      Should you choose <strong>prevent</strong>, you will be unable to reset your password over the phone in the event you forget your password, or your password expires. You will have to go to one of the University’s
+      <a href="#" class="rail-card__link">Technology Help Walk-in locations</a>, and present photo ID for password resets. Some people may choose to do this for extra security.
+    </p>
+    <p>
+      Even if <strong>prevent</strong> is selected, you will still be able to use your
+      <a href="#" class="rail-card__link">Password Recovery Questions</a>
+      to reset your password.
+    </p>
+  </aside>
+</ng-template>
