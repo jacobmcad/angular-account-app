@@ -1,10 +1,10 @@
 export const environment = {
   production: true,
-  apiBase: '/oimUi/self-service',
+  apiBase: '/oimUi',
   useMocks: false,
   features: {
     user: true,
-    password: true,   // example: disable Password Management in prod
+    password: false,   // example: disable Password Management in prod
     duo: true,
     google: true,
     accounts: true,
