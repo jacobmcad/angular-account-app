@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const baseUrl = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:4200';
+const baseUrl = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:4600';
 
 const routes = [
   { path: '/', label: 'User Details' },
