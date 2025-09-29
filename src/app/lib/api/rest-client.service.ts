@@ -26,11 +26,15 @@ export class RestApiClientService {
   }
 
   resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordResponse> {
-    return firstValueFrom(this.http.post<ResetPasswordResponse>(
-      `${this.base}/password/reset`,
-      req,
-      { withCredentials: true },
-    ));
+    if (environment.useMocks) {
+      return firstValueFrom(this.http.post<ResetPasswordResponse>(
+        `${this.base}/password/reset`,
+        req,
+        { withCredentials: true },
+      ));
+    }
+
+    return this.resetPasswordWithLegacyForm(req);
   }
 
   private async fetchAndParseUserDetails(): Promise<UserDetails> {
@@ -189,5 +193,99 @@ export class RestApiClientService {
     if (!data.provisionedAccounts) data.provisionedAccounts = [];
 
     return data as UserDetails;
+  }
+
+  private async resetPasswordWithLegacyForm(req: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+    const tokens = await this.fetchChangePasswordTokens();
+
+    const body = new URLSearchParams();
+    body.set('oimUiFormTicket', tokens.formTicket);
+    body.set('oimUiUserState', tokens.userState);
+    body.set('oimUiTabId', tokens.tabId);
+    body.set('currentPwd', req.currentPassword);
+    body.set('newPwd', req.newPassword);
+    body.set('confirmNewPwd', req.newPassword);
+
+    const html = await firstValueFrom(
+      this.http.post(`${this.base}/change-password`, body.toString(), {
+        responseType: 'text' as const,
+        withCredentials: true,
+        headers: new HttpHeaders({
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        }),
+      }),
+    );
+
+    return this.parseChangePasswordResponse(html);
+  }
+
+  private async fetchChangePasswordTokens(): Promise<{ formTicket: string; userState: string; tabId: string; }> {
+    const html = await firstValueFrom(
+      this.http.get(`${this.base}/change-password`, {
+        responseType: 'text' as const,
+        withCredentials: true,
+        headers: new HttpHeaders({
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        }),
+      }),
+    );
+
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const formTicket = this.getLegacyInputValue(doc, 'oimUiFormTicket');
+    const userState = this.getLegacyInputValue(doc, 'oimUiUserState');
+    const tabId = this.getLegacyInputValue(doc, 'oimUiTabId');
+
+    if (!formTicket || !userState || !tabId) {
+      throw new Error('Unable to load change password form');
+    }
+
+    return { formTicket, userState, tabId };
+  }
+
+  private parseChangePasswordResponse(html: string): ResetPasswordResponse {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const successAlert = doc.querySelector('.alert.alert-success');
+    if (successAlert) {
+      return {
+        success: true,
+        message: this.extractAlertMessage(successAlert) || 'Password changed successfully.',
+      };
+    }
+
+    const errorAlert = doc.querySelector('.alert.alert-danger');
+    if (errorAlert) {
+      return {
+        success: false,
+        message: this.extractAlertMessage(errorAlert) || 'Password change failed.',
+      };
+    }
+
+    return {
+      success: true,
+      message: 'Password change submitted.',
+    };
+  }
+
+  private getLegacyInputValue(doc: Document, name: string): string {
+    const input = doc.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+    if (!input) {
+      return '';
+    }
+    return (input.value || input.getAttribute('value') || '').trim();
+  }
+
+  private extractAlertMessage(element: Element): string {
+    const listItems = Array.from(element.querySelectorAll('li'))
+      .map(item => item.textContent?.replace(/\s+/g, ' ').trim())
+      .filter((text): text is string => !!text);
+
+    if (listItems.length) {
+      return listItems.join(' ');
+    }
+
+    return element.textContent?.replace(/\s+/g, ' ').trim() ?? '';
   }
 }
