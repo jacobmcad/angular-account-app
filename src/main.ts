@@ -12,7 +12,7 @@ async function enableMocking(): Promise<void> {
   const { worker } = await import('./app/lib/api/mocks/browser');
 
   await worker.start({
-    serviceWorker: { url: 'mockServiceWorker.js' },
+    serviceWorker: { url: '/mockServiceWorker.js' },
     onUnhandledRequest(request, print) {
       // ignore Angular dev websocket noise
       if (request.url.includes('/ng-cli-ws')) return;

@@ -1,0 +1,99 @@
+<a class="sr-only focus:not-sr-only focus:absolute top-2 left-2 z-50 bg-white p-2 rounded shadow" href="#guest-main">
+  Skip to main content
+</a>
+
+<header>
+  <div class="guest-header__maroon">
+    <div class="guest-header__inner">
+      <img
+        src="https://my-account.umn.edu/resources/images/umn-header-logo.png"
+        alt="University of Minnesota — Driven to Discover"
+        class="guest-header__logo"
+      />
+      <div class="guest-header__search">
+        <a
+          href="https://www.myu.umn.edu/"
+          class="guest-header__myu"
+        >
+          <span>MYU</span>
+          <span aria-hidden="true">🔒</span>
+          <span class="guest-header__myu-desc">FOR STUDENT, FACULTY, AND STAFF</span>
+          <span class="sr-only">MyU portal, secured experience</span>
+        </a>
+        <form class="guest-header__search-form" role="search" aria-label="Search UMN">
+          <label for="guest-search" class="sr-only">Search University of Minnesota</label>
+          <input id="guest-search" name="search" type="search" placeholder="Search UMN..." />
+          <button type="submit" aria-label="Submit search">🔍</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="guest-header__gold">
+    <div class="guest-header__gold-inner">
+      <span>My Account</span>
+      <nav aria-label="Account actions" class="guest-header__actions">
+        <span class="guest-header__user" aria-hidden="true">👤</span>
+        <span>JMCADAMS</span>
+        <span aria-hidden="true">•</span>
+        <a href="#" class="guest-header__logout">
+          Logout
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="guest-shell">
+  <div class="guest-shell__inner">
+    <aside *ngIf="showNav" class="guest-shell__nav" aria-label="Guest account navigation">
+      <ul>
+        <li *ngFor="let item of navItems">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="guest-shell__nav-link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="guest-shell__nav-link"
+            [class.guest-shell__nav-link--active]="isActive(item.path)"
+          >
+            {{ item.label }}
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main id="guest-main" class="guest-shell__content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <div class="guest-shell__rail" *ngIf="activeRailTemplate(); else defaultRail">
+      <ng-container [ngTemplateOutlet]="activeRailTemplate()"></ng-container>
+    </div>
+    <ng-template #defaultRail>
+      <aside class="guest-rail" aria-labelledby="guest-rail-default">
+        <h2 id="guest-rail-default" class="guest-rail__title">About Guest Accounts</h2>
+        <p>
+          The information you provide identifies the guest account and allows us to contact the guest regarding any
+          changes. The University of Minnesota will not share this information with third parties except as required by law.
+        </p>
+      </aside>
+    </ng-template>
+  </div>
+</div>
+
+<footer class="guest-footer">
+  <div class="guest-footer__inner">
+    <div class="guest-footer__help">
+      <span>Need Help?</span>
+      <a href="https://it.umn.edu/help" target="_blank" rel="noreferrer">Technology Help Website</a>
+      <span aria-hidden="true">•</span>
+      <span>Call 612-301-4357</span>
+      <span aria-hidden="true">•</span>
+      <a href="mailto:help@umn.edu">Email help@umn.edu</a>
+    </div>
+    <p class="guest-footer__legal">
+      Regents of the University of Minnesota. All rights reserved. The University of Minnesota is an equal opportunity educator and employer.
+      <a href="http://privacy.umn.edu" target="_blank" rel="noreferrer">Online Privacy Statement</a>
+    </p>
+  </div>
+</footer>

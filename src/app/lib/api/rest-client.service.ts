@@ -2,8 +2,15 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import type { UserDetails } from './models';
-import type { ResetPasswordRequest, ResetPasswordResponse } from './models';
+import type {
+  ClaimAccountRequest,
+  ClaimAccountResponse,
+  CreateGuestAccountRequest,
+  CreateGuestAccountResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  UserDetails,
+} from './models';
 
 @Injectable({ providedIn: 'root' })
 export class RestApiClientService {
@@ -35,6 +42,30 @@ export class RestApiClientService {
     }
 
     return this.resetPasswordWithLegacyForm(req);
+  }
+
+  createGuestAccount(req: CreateGuestAccountRequest): Promise<CreateGuestAccountResponse> {
+    if (environment.useMocks) {
+      return firstValueFrom(this.http.post<CreateGuestAccountResponse>(
+        `${this.base}/guest-account`,
+        req,
+        { withCredentials: true },
+      ));
+    }
+
+    throw new Error('Guest account creation is not yet available in this environment.');
+  }
+
+  claimAccount(req: ClaimAccountRequest): Promise<ClaimAccountResponse> {
+    if (environment.useMocks) {
+      return firstValueFrom(this.http.post<ClaimAccountResponse>(
+        `${this.base}/claim-account`,
+        req,
+        { withCredentials: true },
+      ));
+    }
+
+    throw new Error('Account claiming is not yet available in this environment.');
   }
 
   private async fetchAndParseUserDetails(): Promise<UserDetails> {

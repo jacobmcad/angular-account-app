@@ -29,3 +29,40 @@ export interface ResetPasswordRequest {
   currentPassword: string;
   newPassword: string;
 }
+
+export type GuestCountry = 'US' | 'CANADA' | 'OTHER';
+
+export interface CreateGuestAccountRequest {
+  firstName: string;
+  middleInitial?: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: GuestCountry;
+  address1: string;
+  address2?: string;
+  city: string;
+  state?: string;
+  province?: string;
+  otherRegion?: string;
+  postalCode: string;
+  password: string;
+}
+
+export interface CreateGuestAccountResponse {
+  success: boolean;
+  message?: string;
+  referenceId?: string;
+}
+
+export interface ClaimAccountRequest {
+  idNumber: string;
+  ssnLast4?: string;
+  birthdate?: string;
+  password: string;
+}
+
+export interface ClaimAccountResponse {
+  success: boolean;
+  message?: string;
+}
