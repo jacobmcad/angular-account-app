@@ -9,5 +9,7 @@ export const environment = {
     google: true,
     accounts: true,
     www: true,
+    guest: false,
+    guestNav: false,
   },
 };

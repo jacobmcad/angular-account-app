@@ -1,0 +1,256 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #eef1f5;
+}
+
+.guest-header__maroon {
+  background: #7a0019;
+  color: #ffffff;
+}
+
+.guest-header__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  gap: 2rem;
+}
+
+.guest-header__logo {
+  height: 3rem;
+  width: auto;
+}
+
+.guest-header__search {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: inherit;
+}
+
+.guest-header__myu {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.guest-header__myu-desc {
+  display: none;
+}
+
+.guest-header__search-form {
+  position: relative;
+  display: none;
+}
+
+.guest-header__search-form input {
+  width: 14rem;
+  padding: 0.5rem 2.2rem 0.5rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+}
+
+.guest-header__search-form button {
+  position: absolute;
+  right: 0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.guest-header__gold {
+  background: #ffcc33;
+  border-bottom: 1px solid #dba01a;
+}
+
+.guest-header__gold-inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #2f2f2f;
+}
+
+.guest-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  letter-spacing: 0.18em;
+  color: #7a0019;
+}
+
+.guest-header__logout {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.guest-shell {
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.guest-shell__inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(15rem, 17rem) minmax(0, 1fr) minmax(16rem, 18rem);
+}
+
+.guest-shell__nav {
+  background: #ffffff;
+  border: 1px solid #d6d9dc;
+  border-radius: 6px;
+  padding: 1.5rem 0;
+  box-shadow: 0 8px 18px rgba(63, 73, 85, 0.08);
+}
+
+.guest-shell__nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guest-shell__nav-link {
+  display: block;
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  color: #3f4a56;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.guest-shell__nav-link:hover,
+.guest-shell__nav-link:focus {
+  background: #f2f5f8;
+  color: #7a0019;
+}
+
+.guest-shell__nav-link--active {
+  background: #5c6670;
+  color: #ffffff;
+}
+
+.guest-shell__content {
+  background: #ffffff;
+  border: 1px solid #d6d9dc;
+  border-radius: 6px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 8px 18px rgba(63, 73, 85, 0.08);
+}
+
+.guest-shell__rail {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.guest-rail {
+  background: #ffffff;
+  border: 1px solid #d6d9dc;
+  border-radius: 6px;
+  padding: 1.75rem;
+  box-shadow: 0 8px 18px rgba(63, 73, 85, 0.08);
+  color: #3f4854;
+  line-height: 1.6;
+}
+
+.guest-rail__title {
+  margin: 0 0 1.1rem;
+  background: #5c6670;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.guest-footer {
+  border-top: 1px solid #d6d9dc;
+  background: #ffffff;
+  padding: 2rem 1.5rem;
+}
+
+.guest-footer__inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  text-align: center;
+  color: #4f5967;
+}
+
+.guest-footer__help {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.guest-footer__help a {
+  color: #7a0019;
+  font-weight: 600;
+}
+
+.guest-footer__legal {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+@media (max-width: 1024px) {
+  .guest-header__search-form {
+    display: none;
+  }
+
+  .guest-shell__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guest-shell__nav {
+    display: none;
+  }
+
+  .guest-shell__rail {
+    position: static;
+    order: 3;
+  }
+}
+
+@media (min-width: 960px) {
+  .guest-header__search-form {
+    display: block;
+  }
+
+  .guest-header__myu-desc {
+    display: inline;
+  }
+}
+
+@media (max-width: 640px) {
+  .guest-shell__content {
+    padding: 2rem 1.5rem;
+  }
+
+  .guest-footer__inner {
+    text-align: left;
+  }
+}

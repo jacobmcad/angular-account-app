@@ -83,4 +83,44 @@ export const handlers = [
       { status: 200 }
     );
   }),
+  http.post('*/api/guest-account', async ({ request }) => {
+    console.warn('[MSW] Intercepted /api/guest-account');
+    const body = await request.json() as { email?: string; }; // minimal check
+
+    if (!body.email) {
+      return HttpResponse.json(
+        { success: false, message: 'Email address is required.' },
+        { status: 400 }
+      );
+    }
+
+    return HttpResponse.json({
+      success: true,
+      message: 'Guest account created. A confirmation email has been sent.',
+      referenceId: 'GA-12345',
+    });
+  }),
+  http.post('*/api/claim-account', async ({ request }) => {
+    console.warn('[MSW] Intercepted /api/claim-account');
+    const body = await request.json() as { idNumber?: string; password?: string; };
+
+    if (!body.idNumber) {
+      return HttpResponse.json(
+        { success: false, message: 'ID number is required.' },
+        { status: 400 }
+      );
+    }
+
+    if (!body.password || body.password.length < 16) {
+      return HttpResponse.json(
+        { success: false, message: 'Password must meet minimum requirements.' },
+        { status: 400 }
+      );
+    }
+
+    return HttpResponse.json({
+      success: true,
+      message: 'Account claimed. You may now sign in with your new password.',
+    });
+  }),
 ];

@@ -1,0 +1,384 @@
+<section class="page-card" aria-labelledby="guest-heading">
+  <h1 id="guest-heading" class="page-card__title">Create Guest Account</h1>
+  <p class="page-card__intro">
+    Provide contact information for the guest. We will use this to verify the account and send important updates.
+  </p>
+
+  <div *ngIf="successMessage() as message"
+       #successBannerRef
+       class="banner banner--success"
+       role="status"
+       aria-live="polite"
+       tabindex="-1">
+    {{ message }}
+  </div>
+
+  <div *ngIf="shouldShowErrorSummary()"
+       #errorSummaryRef
+       id="guest-error-summary"
+       class="banner banner--error"
+       role="alert"
+       aria-live="assertive"
+       tabindex="-1">
+    <h2 class="banner__title">Please review the highlighted items</h2>
+    <ul *ngIf="validationMessages().length" class="banner__list">
+      <li *ngFor="let item of validationMessages()">
+        <a class="banner__link"
+           [href]="'#' + item.fieldId"
+           (click)="focusField(item.fieldId); $event.preventDefault()">
+          {{ item.message }}
+        </a>
+      </li>
+    </ul>
+    <p *ngIf="apiError()" class="banner__message">{{ apiError() }}</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="page-card__form" novalidate>
+    <fieldset class="field-group" aria-labelledby="name-legend">
+      <legend id="name-legend" class="field-group__legend">Name</legend>
+      <div class="field-grid field-grid--two">
+        <div class="field">
+          <label class="field__label" for="firstName">First Name</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            class="field__control"
+            [class.field__control--error]="hasError('firstName')"
+            autocomplete="given-name"
+            [attr.aria-invalid]="hasError('firstName') ? 'true' : null"
+            [attr.aria-describedby]="describeField('firstName')"
+          />
+          <p *ngIf="getError('firstName') as message"
+             id="firstName-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="middleInitial">Middle Initial <span class="field__optional">(optional)</span></label>
+          <input
+            id="middleInitial"
+            type="text"
+            formControlName="middleInitial"
+            class="field__control"
+            maxlength="1"
+            autocomplete="additional-name"
+            [class.field__control--error]="hasError('middleInitial')"
+            [attr.aria-invalid]="hasError('middleInitial') ? 'true' : null"
+            [attr.aria-describedby]="describeField('middleInitial')"
+          />
+          <p *ngIf="getError('middleInitial') as message"
+             id="middleInitial-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="field field--full">
+          <label class="field__label" for="lastName">Last Name</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            class="field__control"
+            autocomplete="family-name"
+            [class.field__control--error]="hasError('lastName')"
+            [attr.aria-invalid]="hasError('lastName') ? 'true' : null"
+            [attr.aria-describedby]="describeField('lastName')"
+          />
+          <p *ngIf="getError('lastName') as message"
+             id="lastName-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="field-group" aria-labelledby="contact-legend">
+      <legend id="contact-legend" class="field-group__legend">Contact</legend>
+      <div class="field-grid field-grid--two">
+        <div class="field field--full">
+          <label class="field__label" for="email">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="field__control field__control--lower"
+            autocomplete="email"
+            [class.field__control--error]="hasError('email')"
+            [attr.aria-invalid]="hasError('email') ? 'true' : null"
+            [attr.aria-describedby]="describeField('email', 'email-help')"
+          />
+          <p id="email-help" class="field__message">This email address will be the guest’s University Internet ID.</p>
+          <p *ngIf="getError('email') as message"
+             id="email-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="field field--full">
+          <label class="field__label" for="phone">Phone Number</label>
+          <input
+            id="phone"
+            type="tel"
+            formControlName="phone"
+            class="field__control"
+            autocomplete="tel"
+            inputmode="tel"
+            [class.field__control--error]="hasError('phone')"
+            [attr.aria-invalid]="hasError('phone') ? 'true' : null"
+            [attr.aria-describedby]="describeField('phone')"
+          />
+          <p *ngIf="getError('phone') as message"
+             id="phone-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="field-group" aria-labelledby="address-legend">
+      <legend id="address-legend" class="field-group__legend">Address</legend>
+
+      <div class="field field--full">
+        <span class="field__label">Select Country</span>
+        <div class="radio-options" aria-labelledby="address-legend">
+          <label *ngFor="let option of countryOptions" class="radio-option" [for]="'country-' + option.value">
+            <input
+              type="radio"
+              [id]="'country-' + option.value"
+              formControlName="country"
+              [value]="option.value"
+              name="country"
+              [attr.aria-describedby]="getCountryError() ? 'country-error' : null"
+            />
+            <span>{{ option.label }}</span>
+          </label>
+        </div>
+        <p *ngIf="getCountryError() as message"
+           id="country-error"
+           class="field__message field__message--error"
+           aria-live="polite">
+          {{ message }}
+        </p>
+      </div>
+
+      <div class="field-grid field-grid--two">
+        <div class="field field--full">
+          <label class="field__label" for="street1">Street Address</label>
+          <input
+            id="street1"
+            type="text"
+            formControlName="street1"
+            class="field__control"
+            autocomplete="address-line1"
+            [class.field__control--error]="hasError('street1')"
+            [attr.aria-invalid]="hasError('street1') ? 'true' : null"
+            [attr.aria-describedby]="describeField('street1')"
+          />
+          <p *ngIf="getError('street1') as message"
+             id="street1-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="field field--full">
+          <label class="field__label" for="street2">Street Address 2 <span class="field__optional">(optional)</span></label>
+          <input
+            id="street2"
+            type="text"
+            formControlName="street2"
+            class="field__control"
+            autocomplete="address-line2"
+          />
+        </div>
+
+        <div class="field field--full">
+          <label class="field__label" for="city">City</label>
+          <input
+            id="city"
+            type="text"
+            formControlName="city"
+            class="field__control"
+            autocomplete="address-level2"
+            [class.field__control--error]="hasError('city')"
+            [attr.aria-invalid]="hasError('city') ? 'true' : null"
+            [attr.aria-describedby]="describeField('city')"
+          />
+          <p *ngIf="getError('city') as message"
+             id="city-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div *ngIf="isUnitedStates()" class="field">
+          <label class="field__label" for="state">State</label>
+          <select
+            id="state"
+            formControlName="state"
+            class="field__control"
+            [class.field__control--error]="hasError('state')"
+            [attr.aria-invalid]="hasError('state') ? 'true' : null"
+            [attr.aria-describedby]="describeField('state')"
+          >
+            <option value="">-- Select --</option>
+            <option *ngFor="let state of states" [value]="state.value">{{ state.label }}</option>
+          </select>
+          <p *ngIf="getError('state') as message"
+             id="state-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div *ngIf="isCanada()" class="field">
+          <label class="field__label" for="province">Province</label>
+          <select
+            id="province"
+            formControlName="province"
+            class="field__control"
+            [class.field__control--error]="hasError('province')"
+            [attr.aria-invalid]="hasError('province') ? 'true' : null"
+            [attr.aria-describedby]="describeField('province')"
+          >
+            <option value="">-- Select --</option>
+            <option *ngFor="let province of provinces" [value]="province.value">{{ province.label }}</option>
+          </select>
+          <p *ngIf="getError('province') as message"
+             id="province-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div *ngIf="isOtherCountry()" class="field">
+          <label class="field__label" for="otherRegion">State / Province <span class="field__optional">(optional)</span></label>
+          <input
+            id="otherRegion"
+            type="text"
+            formControlName="otherRegion"
+            class="field__control"
+            autocomplete="address-level1"
+          />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="postalCode">{{ postalCodeLabel }}</label>
+          <input
+            id="postalCode"
+            type="text"
+            formControlName="postalCode"
+            class="field__control"
+            autocomplete="postal-code"
+            [class.field__control--error]="hasError('postalCode')"
+            [attr.aria-invalid]="hasError('postalCode') ? 'true' : null"
+            [attr.aria-describedby]="describeField('postalCode')"
+          />
+          <p *ngIf="getError('postalCode') as message"
+             id="postalCode-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="field-group" aria-labelledby="password-legend">
+      <legend id="password-legend" class="field-group__legend">Create Password</legend>
+
+      <div class="requirements" aria-live="polite">
+        <h2 class="requirements__title">Password requirements</h2>
+        <ul class="requirements__list">
+          <li *ngFor="let item of passwordRequirements">{{ item }}</li>
+        </ul>
+      </div>
+
+      <div class="field-grid field-grid--two">
+        <div class="field field--full">
+          <label class="field__label" for="password">Password</label>
+          <div class="field__password-wrapper">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="field__control"
+              autocomplete="new-password"
+              [class.field__control--error]="hasError('password')"
+              [attr.aria-invalid]="hasError('password') ? 'true' : null"
+              [attr.aria-describedby]="describeField('password')"
+            />
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility('password')">
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          <p *ngIf="getError('password') as message"
+             id="password-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="field field--full">
+          <label class="field__label" for="confirmPassword">Re-enter Password</label>
+          <div class="field__password-wrapper">
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              class="field__control"
+              autocomplete="new-password"
+              [class.field__control--error]="hasError('confirmPassword') || form.hasError('passwordMismatch')"
+              [attr.aria-invalid]="hasError('confirmPassword') || form.hasError('passwordMismatch') ? 'true' : null"
+              [attr.aria-describedby]="describeField('confirmPassword')"
+            />
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility('confirmPassword')">
+              {{ showConfirmPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          <p *ngIf="getError('confirmPassword') as message"
+             id="confirmPassword-error"
+             class="field__message field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="isSubmitting()" class="submit-button">
+        {{ isSubmitting() ? 'Submitting…' : 'Submit' }}
+      </button>
+    </div>
+  </form>
+</section>
+
+<ng-template #rail>
+  <aside class="rail-card" aria-labelledby="guest-rail-heading">
+    <h2 id="guest-rail-heading" class="rail-card__title">About Guest Accounts</h2>
+    <p>
+      The information you provide identifies the guest account and allows us to contact the guest regarding any
+      changes. Applications at the University may email the guest for various purposes. Please review each
+      application’s privacy statement for specific details. The University of Minnesota will not share this
+      information with third parties except as required by law.
+    </p>
+  </aside>
+</ng-template>

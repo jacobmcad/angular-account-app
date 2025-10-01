@@ -1,0 +1,207 @@
+<section class="claim-card" aria-labelledby="claim-heading">
+  <h1 id="claim-heading" class="claim-card__title">Claim Account</h1>
+  <p class="claim-card__intro">
+    Provide the details you supplied to the University so we can verify your identity and activate your Internet ID.
+    Fields marked optional may be left blank if the University does not have that information on file.
+  </p>
+
+  <div *ngIf="successMessage() as message"
+       #successBannerRef
+       class="claim-banner claim-banner--success"
+       role="status"
+       aria-live="polite"
+       tabindex="-1">
+    {{ message }}
+  </div>
+
+  <div *ngIf="shouldShowErrorSummary()"
+       #errorSummaryRef
+       id="claim-error-summary"
+       class="claim-banner claim-banner--error"
+       role="alert"
+       aria-live="assertive"
+       tabindex="-1">
+    <h2 class="claim-banner__title">Please review the highlighted items</h2>
+    <ul *ngIf="validationMessages().length" class="claim-banner__list">
+      <li *ngFor="let item of validationMessages()">
+        <a class="claim-banner__link"
+           [href]="'#' + item.fieldId"
+           (click)="focusField(item.fieldId); $event.preventDefault()">
+          {{ item.message }}
+        </a>
+      </li>
+    </ul>
+    <p *ngIf="apiError()" class="claim-banner__message">{{ apiError() }}</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="claim-form" novalidate>
+    <fieldset class="claim-fieldset">
+      <legend class="claim-fieldset__legend">Account details</legend>
+      <p class="claim-fieldset__help">
+        If you have provided a Social Security Number or Birthdate to the University, include it so we can confirm your
+        identity. Otherwise, leave those fields blank.
+      </p>
+
+      <div class="claim-grid">
+        <div class="claim-field claim-field--full">
+          <label class="claim-field__label" for="idNumber">ID Number</label>
+          <input
+            id="idNumber"
+            type="text"
+            formControlName="idNumber"
+            class="claim-field__control"
+            autocomplete="off"
+            inputmode="numeric"
+            [class.claim-field__control--error]="hasError('idNumber')"
+            [attr.aria-invalid]="hasError('idNumber') ? 'true' : null"
+            [attr.aria-describedby]="describeField('idNumber', 'idNumber-help')"
+          />
+          <p id="idNumber-help" class="claim-field__message">
+            Enter your Employee or Student ID number.
+          </p>
+          <p *ngIf="getError('idNumber') as message"
+             id="idNumber-error"
+             class="claim-field__message claim-field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="claim-field claim-field--full">
+          <label class="claim-field__label" for="ssnLast4">Last 4 Digits of Social Security Number <span class="claim-field__optional">(optional)</span></label>
+          <input
+            id="ssnLast4"
+            type="text"
+            formControlName="ssnLast4"
+            class="claim-field__control"
+            autocomplete="off"
+            inputmode="numeric"
+            maxlength="4"
+            [class.claim-field__control--error]="hasError('ssnLast4')"
+            [attr.aria-invalid]="hasError('ssnLast4') ? 'true' : null"
+            [attr.aria-describedby]="describeField('ssnLast4', 'ssnLast4-help')"
+          />
+          <p id="ssnLast4-help" class="claim-field__message">
+            Leave blank if the University does not have your Social Security Number on file.
+          </p>
+          <p *ngIf="getError('ssnLast4') as message"
+             id="ssnLast4-error"
+             class="claim-field__message claim-field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="claim-field claim-field--full">
+          <label class="claim-field__label" for="birthdate">Birthdate <span class="claim-field__optional">(optional)</span></label>
+          <input
+            id="birthdate"
+            type="date"
+            formControlName="birthdate"
+            class="claim-field__control"
+            [class.claim-field__control--error]="hasError('birthdate')"
+            [attr.aria-invalid]="hasError('birthdate') ? 'true' : null"
+            [attr.aria-describedby]="describeField('birthdate', 'birthdate-help')"
+          />
+          <p id="birthdate-help" class="claim-field__message">
+            Format: YYYY-MM-DD. Leave blank if no birthdate is on record.
+          </p>
+          <p *ngIf="getError('birthdate') as message"
+             id="birthdate-error"
+             class="claim-field__message claim-field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="claim-fieldset">
+      <legend class="claim-fieldset__legend">Create password</legend>
+
+      <div class="claim-requirements" aria-live="polite">
+        <h2 class="claim-requirements__title">Password requirements</h2>
+        <ul class="claim-requirements__list">
+          <li *ngFor="let item of passwordRequirements">{{ item }}</li>
+        </ul>
+      </div>
+
+      <div class="claim-grid">
+        <div class="claim-field claim-field--full">
+          <label class="claim-field__label" for="password">Password</label>
+          <div class="claim-field__password-wrapper">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="claim-field__control"
+              autocomplete="new-password"
+              [class.claim-field__control--error]="hasError('password')"
+              [attr.aria-invalid]="hasError('password') ? 'true' : null"
+              [attr.aria-describedby]="describeField('password')"
+            />
+            <button type="button" class="claim-toggle" (click)="togglePasswordVisibility('password')">
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          <p *ngIf="getError('password') as message"
+             id="password-error"
+             class="claim-field__message claim-field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+
+        <div class="claim-field claim-field--full">
+          <label class="claim-field__label" for="confirmPassword">Confirm Password</label>
+          <div class="claim-field__password-wrapper">
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              class="claim-field__control"
+              autocomplete="new-password"
+              [class.claim-field__control--error]="hasError('confirmPassword') || form.hasError('passwordMismatch')"
+              [attr.aria-invalid]="hasError('confirmPassword') || form.hasError('passwordMismatch') ? 'true' : null"
+              [attr.aria-describedby]="describeField('confirmPassword')"
+            />
+            <button type="button" class="claim-toggle" (click)="togglePasswordVisibility('confirmPassword')">
+              {{ showConfirmPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          <p *ngIf="getError('confirmPassword') as message"
+             id="confirmPassword-error"
+             class="claim-field__message claim-field__message--error"
+             aria-live="polite">
+            {{ message }}
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <section class="claim-duo" aria-labelledby="duo-heading">
+      <h2 id="duo-heading" class="claim-duo__title">Duo Security two-factor authentication</h2>
+      <p>
+        Depending on your affiliation, you may be automatically enrolled in Duo Security. If so, your next step is to
+        enroll a device. You will have seven days to complete enrollment after claiming your account.
+      </p>
+    </section>
+
+    <div class="claim-actions">
+      <button type="submit" class="claim-submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Submitting…' : 'Submit' }}
+      </button>
+    </div>
+  </form>
+</section>
+
+<ng-template #rail>
+  <aside class="claim-rail" aria-labelledby="claim-rail-heading">
+    <h2 id="claim-rail-heading" class="claim-rail__title">About claiming your account</h2>
+    <p>
+      The information you provide verifies your identity and eligibility for a University Internet account. All
+      information on this form is required unless noted as optional. If you prefer not to share this data, you can visit
+      a Technology Help location with photo ID to activate your account in person.
+    </p>
+  </aside>
+</ng-template>

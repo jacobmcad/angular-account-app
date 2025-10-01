@@ -39,7 +39,7 @@
     </p>
 
     <h2 class="text-lg font-semibold">
-      <span class="mr-2" aria-hidden="true">👤</span>{{ (details.email ?? '').split('@')[0] | uppercase }}
+      <span class="mr-2" aria-hidden="true">👤</span>{{ details.email.split('@')[0] | uppercase }}
     </h2>
 
     <div class="overflow-x-auto">
@@ -50,19 +50,23 @@
             <th scope="row" class="w-1/3 border border-gray-300 bg-gray-50 text-left px-3 py-2 font-medium">
               Full Name
             </th>
-            <td class="border border-gray-300 px-3 py-2">{{ details.fullName ?? '' }}</td>
+            <td class="border border-gray-300 px-3 py-2">{{ details.fullName }}</td>
           </tr>
           <tr>
             <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">PRI Name</th>
-            <td class="border border-gray-300 px-3 py-2">{{ details.priName ?? '' }}</td>
+            <td class="border border-gray-300 px-3 py-2">{{ details.priName }}</td>
           </tr>
           <tr>
             <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Aliases</th>
-            <td class="border border-gray-300 px-3 py-2">{{ details.aliases?.join(', ') ?? '' }}</td>
+            <td class="border border-gray-300 px-3 py-2">
+              {{ details.aliases.length ? details.aliases.join(', ') : 'None on file' }}
+            </td>
           </tr>
           <tr>
             <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Person Types</th>
-            <td class="border border-gray-300 px-3 py-2">{{ details.personTypes?.join(', ') ?? '' }}</td>
+            <td class="border border-gray-300 px-3 py-2">
+              {{ details.personTypes.length ? details.personTypes.join(', ') : 'None on file' }}
+            </td>
           </tr>
           <tr>
             <th scope="row" class="border border-gray-300 bg-gray-50 px-3 py-2">Employee ID</th>

@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.guest-card {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.guest-card__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2f3941;
+  margin: 0;
+}
+
+.guest-card__lead {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.guest-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.guest-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #7a0019;
+  text-decoration: underline;
+}
+
+.guest-card__link:hover,
+.guest-card__link:focus {
+  color: #4c0e17;
+}
