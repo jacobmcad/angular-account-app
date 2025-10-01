@@ -4,7 +4,7 @@ export const environment = {
   useMocks: false,
   features: {
     user: true,
-    password: false,   // example: disable Password Management in prod
+    password: true,   // example: disable Password Management in prod
     duo: true,
     google: true,
     accounts: true,
