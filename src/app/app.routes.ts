@@ -45,61 +45,64 @@ export const appRoutes: Routes = [
     ],
   },
   {
-    path: 'create-guest-acct',
+    path: 'guest',
     component: GuestAccountShellComponent,
     children: [
       {
-        path: '',
+        path: 'create-guest-acct',
         loadComponent: () =>
           import('./features/guest-account/create-guest-account/create-guest-account.component')
             .then(m => m.CreateGuestAccountComponent),
         title: 'Create Guest Account'
       },
-    ],
-  },
-  {
-    path: 'claim-acct',
-    component: GuestAccountShellComponent,
-    children: [
       {
-        path: '',
+        path: 'claim-acct',
         loadComponent: () =>
           import('./features/guest-account/claim-account/claim-account.component')
             .then(m => m.ClaimAccountComponent),
         title: 'Claim Account'
       },
-    ],
-  },
-  {
-    path: 'recover-password',
-    component: GuestAccountShellComponent,
-    children: [
       {
-        path: '',
+        path: 'recover-password',
         loadComponent: () =>
           import('./features/guest-account/recover-password/recover-password.component')
             .then(m => m.RecoverPasswordComponent),
         title: 'Recover Your UMN Password'
       },
-    ],
-  },
-  {
-    path: 'recover-internet-id',
-    component: GuestAccountShellComponent,
-    children: [
       {
-        path: '',
+        path: 'recover-internet-id',
         loadComponent: () =>
           import('./features/guest-account/recover-internet-id/recover-internet-id.component')
             .then(m => m.RecoverInternetIdComponent),
         title: 'Recover Internet ID'
       },
+      { path: '', pathMatch: 'full', redirectTo: 'create-guest-acct' },
     ],
+  },
+  {
+    path: 'create-guest-acct',
+    pathMatch: 'full',
+    redirectTo: 'guest/create-guest-acct',
+  },
+  {
+    path: 'claim-acct',
+    pathMatch: 'full',
+    redirectTo: 'guest/claim-acct',
+  },
+  {
+    path: 'recover-password',
+    pathMatch: 'full',
+    redirectTo: 'guest/recover-password',
+  },
+  {
+    path: 'recover-internet-id',
+    pathMatch: 'full',
+    redirectTo: 'guest/recover-internet-id',
   },
   {
     path: 'guest-account/create',
     pathMatch: 'full',
-    redirectTo: 'create-guest-acct',
+    redirectTo: 'guest/create-guest-acct',
   },
   { path: '**', redirectTo: '' },
 ];

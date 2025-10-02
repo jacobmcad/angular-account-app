@@ -66,3 +66,21 @@ export interface ClaimAccountResponse {
   success: boolean;
   message?: string;
 }
+
+export interface RecoverPasswordRequest {
+  identifier: string;
+}
+
+export interface RecoverPasswordResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface RecoverInternetIdRequest {
+  alternateEmail: string;
+}
+
+export interface RecoverInternetIdResponse {
+  success: boolean;
+  message?: string;
+}

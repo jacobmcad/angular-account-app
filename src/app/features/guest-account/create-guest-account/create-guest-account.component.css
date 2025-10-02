@@ -256,24 +256,51 @@
 .rail-card {
   position: sticky;
   top: 1.5rem;
-  background: #ffffff;
   border: 1px solid #d6d9dc;
-  border-radius: 6px;
-  padding: 1.75rem;
-  box-shadow: 0 8px 18px rgba(63, 73, 85, 0.08);
-  line-height: 1.6;
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(63, 73, 85, 0.12);
   color: #3f4a56;
+  line-height: 1.55;
+}
+
+.rail-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #5c6670;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.rail-card__header::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #ffffff;
 }
 
 .rail-card__title {
-  margin: 0 0 1rem;
-  background: #5c6670;
-  color: #ffffff;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
+  margin: 0;
+  font-size: 0.88rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.rail-card__body {
+  padding: 1.2rem 1.4rem 1.6rem;
+  background: linear-gradient(#fdfdfd, #f4f6f9);
+}
+
+.rail-card__body p {
+  margin: 0;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {

@@ -7,6 +7,10 @@ import type {
   ClaimAccountResponse,
   CreateGuestAccountRequest,
   CreateGuestAccountResponse,
+  RecoverPasswordRequest,
+  RecoverPasswordResponse,
+  RecoverInternetIdRequest,
+  RecoverInternetIdResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   UserDetails,
@@ -66,6 +70,30 @@ export class RestApiClientService {
     }
 
     throw new Error('Account claiming is not yet available in this environment.');
+  }
+
+  recoverPassword(req: RecoverPasswordRequest): Promise<RecoverPasswordResponse> {
+    if (environment.useMocks) {
+      return firstValueFrom(this.http.post<RecoverPasswordResponse>(
+        `${this.base}/recover-password`,
+        req,
+        { withCredentials: true },
+      ));
+    }
+
+    throw new Error('Password recovery is not yet available in this environment.');
+  }
+
+  recoverInternetId(req: RecoverInternetIdRequest): Promise<RecoverInternetIdResponse> {
+    if (environment.useMocks) {
+      return firstValueFrom(this.http.post<RecoverInternetIdResponse>(
+        `${this.base}/recover-internet-id`,
+        req,
+        { withCredentials: true },
+      ));
+    }
+
+    throw new Error('Internet ID recovery is not yet available in this environment.');
   }
 
   private async fetchAndParseUserDetails(): Promise<UserDetails> {
