@@ -197,11 +197,16 @@
 
 <ng-template #rail>
   <aside class="claim-rail" aria-labelledby="claim-rail-heading">
-    <h2 id="claim-rail-heading" class="claim-rail__title">About claiming your account</h2>
-    <p>
-      The information you provide verifies your identity and eligibility for a University Internet account. All
-      information on this form is required unless noted as optional. If you prefer not to share this data, you can visit
-      a Technology Help location with photo ID to activate your account in person.
-    </p>
+    <div class="claim-rail__header">
+      <span class="claim-rail__chevron" aria-hidden="true"></span>
+      <h2 id="claim-rail-heading" class="claim-rail__title">About claiming your account</h2>
+    </div>
+    <div class="claim-rail__body">
+      <p>
+        The information you provide verifies your identity and eligibility for a University Internet account. All
+        information on this form is required unless noted as optional. If you prefer not to share this data, you can visit
+        a Technology Help location with photo ID to activate your account in person.
+      </p>
+    </div>
   </aside>
 </ng-template>

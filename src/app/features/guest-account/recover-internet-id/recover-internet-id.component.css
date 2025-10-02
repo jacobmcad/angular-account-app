@@ -2,40 +2,223 @@
   display: block;
 }
 
-.guest-card {
-  display: grid;
-  gap: 1.25rem;
+.page-card {
+  background: #ffffff;
+  border: 1px solid #d6d9dc;
+  border-radius: 6px;
+  padding: 2.5rem 3rem 3rem;
+  box-shadow: 0 8px 18px rgba(63, 73, 85, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
-.guest-card__title {
-  font-size: 2rem;
+.page-card__title {
+  margin: 0;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #2f3941;
-  margin: 0;
 }
 
-.guest-card__lead {
+.page-card__intro {
   margin: 0;
   color: #4b5563;
   line-height: 1.6;
 }
 
-.guest-card__actions {
+.page-card__form {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
-.guest-card__link {
-  display: inline-flex;
-  align-items: center;
+.form-field {
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
+}
+
+.form-field__label {
+  font-size: 1rem;
   font-weight: 600;
-  color: #7a0019;
+  color: #3f4a56;
+}
+
+.form-field__control {
+  border: 1px solid #c2c9d3;
+  border-radius: 4px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.98rem;
+  color: #2f3941;
+  background: #ffffff;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.form-field__control:focus {
+  outline: none;
+  border-color: #7a0019;
+  box-shadow: 0 0 0 2px rgba(122, 0, 25, 0.18);
+}
+
+.form-field__control--invalid {
+  border-color: #d1434b;
+}
+
+.form-field__message {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5c6670;
+  line-height: 1.5;
+}
+
+.form-field__message--error {
+  color: #b22431;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button {
+  border: none;
+  border-radius: 4px;
+  background: #7a0019;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.85rem 2.75rem;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.submit-button[disabled] {
+  cursor: not-allowed;
+  background: #b9899a;
+}
+
+.submit-button:not([disabled]):hover,
+.submit-button:not([disabled]):focus {
+  background: #630016;
+  outline: none;
+}
+
+.banner {
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  border: 1px solid transparent;
+}
+
+.banner--success {
+  background: #f1faf3;
+  border-color: #3aa166;
+  color: #205c3b;
+}
+
+.banner--error {
+  background: #fdf2f2;
+  border-color: #e53e3e;
+  color: #742a2a;
+}
+
+.banner__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.banner__list {
+  margin: 0.25rem 0 0.75rem 1.5rem;
+  padding: 0;
+  list-style: disc;
+}
+
+.banner__link {
+  color: inherit;
   text-decoration: underline;
 }
 
-.guest-card__link:hover,
-.guest-card__link:focus {
-  color: #4c0e17;
+.banner__link:hover,
+.banner__link:focus {
+  text-decoration: none;
+}
+
+.banner__message {
+  margin: 0;
+}
+
+.rail-card {
+  position: sticky;
+  top: 1.5rem;
+  border: 1px solid #d6d9dc;
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(63, 73, 85, 0.12);
+  color: #3f4a56;
+  line-height: 1.55;
+}
+
+.rail-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #5c6670;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.rail-card__header::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #ffffff;
+}
+
+.rail-card__title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rail-card__body {
+  padding: 1.2rem 1.4rem 1.6rem;
+  background: linear-gradient(#fdfdfd, #f4f6f9);
+}
+
+.rail-card__body p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.rail-card__link {
+  color: #7a0019;
+  font-weight: 600;
+}
+
+.rail-card__link:hover,
+.rail-card__link:focus {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .page-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
 }

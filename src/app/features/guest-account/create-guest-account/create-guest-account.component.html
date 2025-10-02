@@ -373,12 +373,17 @@
 
 <ng-template #rail>
   <aside class="rail-card" aria-labelledby="guest-rail-heading">
-    <h2 id="guest-rail-heading" class="rail-card__title">About Guest Accounts</h2>
-    <p>
-      The information you provide identifies the guest account and allows us to contact the guest regarding any
-      changes. Applications at the University may email the guest for various purposes. Please review each
-      application’s privacy statement for specific details. The University of Minnesota will not share this
-      information with third parties except as required by law.
-    </p>
+    <div class="rail-card__header">
+      <span class="rail-card__chevron" aria-hidden="true"></span>
+      <h2 id="guest-rail-heading" class="rail-card__title">About Guest Accounts</h2>
+    </div>
+    <div class="rail-card__body">
+      <p>
+        The information you provide identifies the guest account and allows us to contact the guest regarding any
+        changes. Applications at the University may email the guest for various purposes. Please review each
+        application’s privacy statement for specific details. The University of Minnesota will not share this
+        information with third parties except as required by law.
+      </p>
+    </div>
   </aside>
 </ng-template>

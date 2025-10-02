@@ -123,4 +123,36 @@ export const handlers = [
       message: 'Account claimed. You may now sign in with your new password.',
     });
   }),
+  http.post('*/api/recover-password', async ({ request }) => {
+    console.warn('[MSW] Intercepted /api/recover-password');
+    const body = await request.json() as { identifier?: string };
+
+    if (!body.identifier) {
+      return HttpResponse.json(
+        { success: false, message: 'Enter your Internet ID or alternate email address.' },
+        { status: 400 }
+      );
+    }
+
+    return HttpResponse.json({
+      success: true,
+      message: 'Check your email for password recovery instructions.',
+    });
+  }),
+  http.post('*/api/recover-internet-id', async ({ request }) => {
+    console.warn('[MSW] Intercepted /api/recover-internet-id');
+    const body = await request.json() as { alternateEmail?: string };
+
+    if (!body.alternateEmail) {
+      return HttpResponse.json(
+        { success: false, message: 'Enter your alternate email address.' },
+        { status: 400 }
+      );
+    }
+
+    return HttpResponse.json({
+      success: true,
+      message: 'Your Internet ID has been sent to your alternate email address.',
+    });
+  }),
 ];
